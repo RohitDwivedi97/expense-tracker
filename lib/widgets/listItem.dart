@@ -11,13 +11,24 @@ class ListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 5,
+      margin: EdgeInsets.symmetric(
+        vertical: 10,
+        horizontal: 5,
+      ),
       child: ListTile(
         leading: CircleAvatar(
-          radius: 40,
-          child: FittedBox(
-            child: Text(
-              '\$${transaction.amount.toStringAsFixed(2)}',
-              style: Theme.of(context).textTheme.headline1,
+          radius: 30,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: FittedBox(
+              child: Text(
+                '\$${transaction.amount.toStringAsFixed(2)}',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 30.0,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
             ),
           ),
         ),

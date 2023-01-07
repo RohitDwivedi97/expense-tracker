@@ -13,24 +13,22 @@ class MyApp extends StatelessWidget {
       title: 'Flutter App',
       home: MyHomePage(),
       theme: ThemeData(
-        primarySwatch: Colors.purple,
-        fontFamily: 'Quicksand',
-        textTheme: const TextTheme(
-          headline1: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 14.0,
-            fontFamily: 'OpenSans',
+          primarySwatch: Colors.purple,
+          fontFamily: 'Quicksand',
+          textTheme: const TextTheme(
+            headline1: TextStyle(
+              color: Colors.purple,
+              fontWeight: FontWeight.bold,
+              fontSize: 14.0,
+              fontFamily: 'OpenSans',
+            ),
           ),
-        ),
-        appBarTheme: const AppBarTheme(
-          titleTextStyle: TextStyle(
+          appBarTheme: const AppBarTheme(
+              titleTextStyle: TextStyle(
             fontFamily: 'OpenSans',
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
-          )
-        )
-      ),
+          ))),
     );
   }
 }
@@ -41,17 +39,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Transaction> transactions = [
-    // Transaction(
-    //     id: '1', amount: 350.0, datetime: DateTime.now(), title: 'New Shoes'),
-    // Transaction(
-    //     id: '1', amount: 370.0, datetime: DateTime.now(), title: 'MacBook Pro')
-  ];
+  List<Transaction> transactions = [];
 
   List<Transaction> get _recentTransactions {
-    return transactions.where((tx) {
-      return tx.datetime.isAfter(DateTime.now().subtract(const Duration(days: 7),),);
-    },).toList();
+    return transactions.where(
+      (tx) {
+        return tx.datetime.isAfter(
+          DateTime.now().subtract(
+            const Duration(days: 7),
+          ),
+        );
+      },
+    ).toList();
   }
 
   void _onAddTrancation(
