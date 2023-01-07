@@ -17,10 +17,10 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Quicksand',
         textTheme: const TextTheme(
           headline1: TextStyle(
-            color: Colors.purple,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
-            fontSize: 16.0,
-            fontFamily: 'OpenSans'
+            fontSize: 14.0,
+            fontFamily: 'OpenSans',
           ),
         ),
         appBarTheme: const AppBarTheme(
