@@ -18,14 +18,14 @@ class _NewTransactionState extends State<NewTransaction> {
     final title = titleController.text;
     final amount = double.parse(amountController.text);
 
-    if (title.isEmpty || amount <= 0) {
+    if (title.isEmpty || amount <= 0 || _selectedDate == null) {
       return;
     }
     widget.onAddTransaction(
-        id: (++id).toString(),
+        id: DateTime.now().toString(),
         title: title,
         amount: amount,
-        datetime: DateTime.now());
+        datetime: _selectedDate);
     Navigator.of(context).pop();
   }
 
@@ -44,8 +44,6 @@ class _NewTransactionState extends State<NewTransaction> {
           });
         });
   }
-
-  int id = 4;
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +71,10 @@ class _NewTransactionState extends State<NewTransaction> {
             margin: EdgeInsets.only(top: 15),
             child: Row(
               children: <Widget>[
-                Text(_selectedDate == null ? 'No date chosen' : DateFormat.yMd().format(_selectedDate),
-                    style: Theme.of(context).textTheme.headline1),
+                Expanded(
+                  child: Text(_selectedDate == null ? 'No date chosen' : DateFormat.yMd().format(_selectedDate),
+                      style: Theme.of(context).textTheme.headline1),
+                ),
                 TextButton(
                   child: Text('Choose Date',
                       style:
