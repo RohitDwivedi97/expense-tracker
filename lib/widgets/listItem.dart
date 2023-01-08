@@ -3,7 +3,7 @@ import '../models/transaction.dart';
 import 'package:intl/intl.dart';
 
 class ListItem extends StatelessWidget {
-  final Transaction transaction;
+  final Expense transaction;
   final Function deleteById;
 
   ListItem({required this.transaction, required this.deleteById});
@@ -42,7 +42,7 @@ class ListItem extends StatelessWidget {
               fontSize: 18),
         ),
         subtitle: Text(
-          DateFormat.yMMMMd().format(transaction.datetime),
+          DateFormat.yMMMMd().format(DateTime.parse(transaction.datetime)),
         ),
         trailing: IconButton(
           color: Theme.of(context).errorColor,

@@ -3,8 +3,15 @@ import 'package:flutter/material.dart';
 import 'models/transaction.dart';
 import 'widgets/transaction_list.dart';
 import 'widgets/chart.dart';
+import './database/database_service.dart';
+import 'dart:async';
 
-void main() => runApp(MyApp());
+var db;
+void main() async {
+  db = await openDatabaseConnection();
+
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -39,12 +46,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Transaction> transactions = [];
-
-  List<Transaction> get _recentTransactions {
+  List<Expense> transactions = [];
+  List<Expense> get _recentTransactions {
     return transactions.where(
       (tx) {
-        return tx.datetime.isAfter(
+        return DateTime.parse(tx.datetime).isAfter(
           DateTime.now().subtract(
             const Duration(days: 7),
           ),
@@ -53,12 +59,21 @@ class _MyHomePageState extends State<MyHomePage> {
     ).toList();
   }
 
+  _MyHomePageState() {
+    getExpenses(db).then((value) {
+      setState(() {
+        transactions.addAll(value);
+      });
+    });
+  }
+
   void _onAddTrancation(
       {required id, required amount, required datetime, required title}) {
+    var expense = Expense(
+        id: id, datetime: datetime.toString(), title: title, amount: amount);
+    insertExpense(expense, db);
     setState(() {
-      var transaction =
-          Transaction(id: id, datetime: datetime, title: title, amount: amount);
-      transactions.add(transaction);
+      transactions.add(expense);
     });
   }
 
@@ -78,8 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    final appBar = AppBar(
         title: Text('Personal Expenses'),
         actions: <Widget>[
           IconButton(
@@ -89,15 +103,27 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.add),
           ),
         ],
-      ),
-      body: Container(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Chart(recentTransactions: _recentTransactions),
-              TransactionList(userTransactions: transactions, deleteById: _deleteById),
-            ]),
+      );
+
+    return Scaffold(
+      appBar: appBar,
+      body: SingleChildScrollView(
+        child: Container(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Container(
+                  height: (MediaQuery.of(context).size.height - appBar.preferredSize.height) * 0.25,
+                  child: Chart(recentTransactions: _recentTransactions),
+                ),
+                Container(
+                  height: (MediaQuery.of(context).size.height - appBar.preferredSize.height) * 0.6,
+                  child: TransactionList(
+                      userTransactions: transactions, deleteById: _deleteById),
+                ),
+              ]),
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(

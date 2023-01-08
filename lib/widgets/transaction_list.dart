@@ -3,7 +3,7 @@ import '../models/transaction.dart';
 import './listItem.dart';
 
 class TransactionList extends StatelessWidget {
-  final List<Transaction> userTransactions;
+  final List<Expense> userTransactions;
   final Function deleteById;
 
   TransactionList({required this.userTransactions, required this.deleteById});
@@ -11,7 +11,6 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 400,
       child: userTransactions.isEmpty
           ? Column(
               children: <Widget>[

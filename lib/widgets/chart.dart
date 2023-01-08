@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import './chart_bar.dart';
 
 class Chart extends StatelessWidget {
-  final List<Transaction> recentTransactions;
+  final List<Expense> recentTransactions;
 
   Chart({required this.recentTransactions});
 
@@ -14,9 +14,10 @@ class Chart extends StatelessWidget {
       double totalSum = 0;
 
       for (var tx in recentTransactions) {
-        if (tx.datetime.day == weekDay.day &&
-            tx.datetime.month == weekDay.month &&
-            tx.datetime.year == weekDay.year) {
+        var dateTimeObject = DateTime.parse(tx.datetime);
+        if (dateTimeObject.day == weekDay.day &&
+            dateTimeObject.month == weekDay.month &&
+            dateTimeObject.year == weekDay.year) {
           totalSum += tx.amount;
         }
       }
