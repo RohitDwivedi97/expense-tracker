@@ -5,11 +5,18 @@ import 'widgets/transaction_list.dart';
 import 'widgets/chart.dart';
 import './database/database_service.dart';
 import 'dart:async';
+import 'package:flutter/services.dart';
 
 var db;
 void main() async {
   db = await openDatabaseConnection();
-
+  // One solution to fix the UI in landscape mode is to is to not allow landscape mode at all.
+  // so let's try that out. 
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]);
   runApp(MyApp());
 }
 
