@@ -10,13 +10,6 @@ import 'package:flutter/services.dart';
 var db;
 void main() async {
   db = await openDatabaseConnection();
-  // One solution to fix the UI in landscape mode is to is to not allow landscape mode at all.
-  // so let's try that out. 
-  WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown
-  ]);
   runApp(MyApp());
 }
 
@@ -87,6 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void startAddModalSheet(BuildContext ctx) {
     showModalBottomSheet(
         context: ctx,
+        isScrollControlled: true,
         builder: (_) {
           return NewTransaction(onAddTransaction: _onAddTrancation);
         });
@@ -98,19 +92,42 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  bool _showChart = false;
+
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final _isLandscape =
+        mediaQuery.orientation == Orientation.landscape;
+
     final appBar = AppBar(
-        title: Text('Personal Expenses'),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              startAddModalSheet(context);
-            },
-            icon: Icon(Icons.add),
-          ),
-        ],
-      );
+      title: Text('Personal Expenses'),
+      actions: <Widget>[
+        IconButton(
+          onPressed: () {
+            startAddModalSheet(context);
+          },
+          icon: Icon(Icons.add),
+        ),
+      ],
+    );
+
+    final txList = Container(
+      height: (mediaQuery.size.height -
+              appBar.preferredSize.height -
+              mediaQuery.padding.top) *
+          0.6,
+      child: TransactionList(
+          userTransactions: transactions, deleteById: _deleteById),
+    );
+
+    final chart = Container(
+      height: (mediaQuery.size.height -
+              appBar.preferredSize.height -
+              mediaQuery.padding.top) *
+          (_isLandscape ?  0.7: 0.3),
+      child: Chart(recentTransactions: _recentTransactions),
+    );
 
     return Scaffold(
       appBar: appBar,
@@ -120,15 +137,25 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                Container(
-                  height: (MediaQuery.of(context).size.height - appBar.preferredSize.height) * 0.25,
-                  child: Chart(recentTransactions: _recentTransactions),
-                ),
-                Container(
-                  height: (MediaQuery.of(context).size.height - appBar.preferredSize.height) * 0.6,
-                  child: TransactionList(
-                      userTransactions: transactions, deleteById: _deleteById),
-                ),
+                if (_isLandscape)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Show Chart'),
+                      Switch(
+                          value: _showChart,
+                          onChanged: (val) {
+                            setState(() {
+                              _showChart = val;
+                            });
+                          }),
+                    ],
+                  ),
+                  if(!_isLandscape) chart,
+                  if(!_isLandscape) txList,
+                  if(_isLandscape) _showChart
+                    ? chart
+                    : txList
               ]),
         ),
       ),

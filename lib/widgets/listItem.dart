@@ -44,7 +44,12 @@ class ListItem extends StatelessWidget {
         subtitle: Text(
           DateFormat.yMMMMd().format(DateTime.parse(transaction.datetime)),
         ),
-        trailing: IconButton(
+        trailing: MediaQuery.of(context).size.width > 460 ? FlatButton.icon(
+          icon: Icon(Icons.delete),
+          label: Text('Delete'),
+          textColor: Theme.of(context).errorColor,
+          onPressed: () => deleteById(transaction.id),
+        ) :IconButton(
           color: Theme.of(context).errorColor,
           icon: Icon(Icons.delete),
           onPressed: () => deleteById(transaction.id),
